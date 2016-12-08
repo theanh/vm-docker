@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+  db:
+    image: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ../.data/db:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: ~
+      MYSQL_DATABASE: ~
+      MYSQL_USER: ~
+      MYSQL_PASSWORD: ~
+
+  es:
+    build: elk/elasticsearch
+    volumes:
+      - ../.data/es:/usr/share/elasticsearch/data
+    ports:
+      - 9300:9200
+      - 9301:9300
+
+  redis:
+    image: redis
+    ports:
+      - 6389:6379
+
+  php:
+    build: php7-fpm
+    ports:
+      - 9000:9000
+    links:
+      - db:mysqldb
+      - es
+      - redis
+    volumes:
+      - ../source:/var/www/${SITE}
+
+  nginx:
+    build: nginx
+    ports:
+      - 80:80
+    links:
+      - php
+    volumes_from:
+      - php
