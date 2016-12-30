@@ -46,3 +46,12 @@ services:
       - php
     volumes_from:
       - php
+
+  node:
+    build: yarn
+    ports:
+      - 8900:8900
+    links:
+      - php
+    volumes_from:
+      - php
