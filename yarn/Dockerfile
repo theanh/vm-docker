@@ -1,6 +1,11 @@
 FROM node:latest
 
-RUN npm set progress=false && \
-    npm install -g --progress=false yarn
+ARG PORT
+RUN npm install -g yarn
 
-WORKDIR /workspace
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+EXPOSE $PORT
+CMD [ "npm", "start" ]
